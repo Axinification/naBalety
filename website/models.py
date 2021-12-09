@@ -7,7 +7,7 @@ import uuid
 class Event(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, db_index=True)
-    banner = models.ImageField(upload_to='banners/' ,null=True, blank=True)
+    banner = models.ImageField(upload_to='banners/', null=True, blank=True)
     description = models.TextField(blank=True)
     address = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, blank=True)

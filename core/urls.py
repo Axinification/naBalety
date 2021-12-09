@@ -25,3 +25,7 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+admin.site.site_header = "naBalety Admin"
+admin.site.site_title = "naBalety Panel Administratora"
+admin.site.index_title = "Site management"
