@@ -20,7 +20,7 @@ def event_details(request, slug):
 
 def ticket_details_by_id(request, id):
     ticket = get_object_or_404(Ticket, id=id)
-    if ticket.bought_by:
+    if ticket.bought_by: #TODO Add bought_by == user
         return render(request, 'ticket.html', {'ticket':ticket})
     else:
         return render(request, '404.html')
