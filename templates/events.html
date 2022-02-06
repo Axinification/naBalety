@@ -1,0 +1,41 @@
+{% extends "./base.html" %}
+{% load static %}
+{% block title %}Wydarzenia{% endblock %}
+{% block content %}
+
+
+<main>
+
+  <div class="album py-5 bg-light">
+    <div class="container">
+
+      <div class="pb-3 h5">Wydarzenia</div>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3">
+
+        {% for event in events %}
+        {% if event.visible == True %}
+
+        <div class="col">
+          <div class="card shadow-sm">
+            <img class="img-fluid" alt="Responsive image" src="{{ event.banner.url }}">
+            <div class="card-body">
+              <p class="card-text">
+                <a class="text-dark text-decoration-none" href="{{ event.get_absolute_url }}">{{ event.name }}</a>
+              </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">{{event.event_date_time}}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+
+</main>
+
+{% endblock %}
