@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import City, Club, Contact, Event, Ticket
+from .models import City, Club, Contact, Event, Promotor, Ticket
 
 @admin.register(City)
 class EventAdmin(admin.ModelAdmin):
@@ -8,12 +8,14 @@ class EventAdmin(admin.ModelAdmin):
     # prepopulated_fields = {'voivodeship': ()}
     list_filter = ['voivodeship']
     # list_editable = ['city', 'voivodeship']
+    prepopulated_fields = {'slug': ('city',)}
 
 @admin.register(Club)
 class EventAdmin(admin.ModelAdmin):
     list_display = ['name', 'get_city_name', 'address']
     list_filter = ['city__city']
     # list_editable = ['city__city', 'name', 'address']
+    prepopulated_fields = {'slug': ('name',)}
 
     def get_city_name(self, obj):
         return obj.city.city
@@ -31,6 +33,14 @@ class EventAdmin(admin.ModelAdmin):
     def get_club_city(self, obj):
         return obj.club.city.city
 
+@admin.register(Promotor)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ['user', 'city', 'promo_code']
+    list_editable = ['city', 'promo_code']
+
+    # def get_city_name(self, obj):
+    #     return obj.city.city
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ['visible', 'name', 'slug', 'description', 'get_city_name', 'club', 'event_date_time',
@@ -45,5 +55,5 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ['id', 'event', 'date_sold', 'price', 'bought_by', 'promotor']
-    prepopulated_fields = {'slug': ('id',)}
+    list_display = ['ticket_id', 'event', 'date_sold', 'price', 'bought_by', 'promotor']
+    prepopulated_fields = {'slug': ('ticket_id',)}

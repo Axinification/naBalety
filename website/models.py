@@ -11,6 +11,7 @@ from django.urls import reverse
 
 class City(models.Model):
     city = models.CharField(max_length=50, db_index=True)
+    slug = models.SlugField(max_length=255)
     voivodeship = models.CharField( max_length=30,
         choices=[
             ('Dolnośląskie', 'Dolnośląskie'), 
@@ -47,6 +48,7 @@ class Club(models.Model):
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255)
 
     def __str__(self):
         return (
@@ -79,7 +81,7 @@ class Contact(models.Model):
 class Event(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, db_index=True)
-    banner = models.ImageField(upload_to='banners/', null=True, blank=True)
+    banner = models.ImageField(upload_to='banners/')
     description = models.TextField(blank=True)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
     visible = models.BooleanField(default=False)
@@ -106,14 +108,39 @@ class Event(models.Model):
             }"""
         )
 
+class Promotor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    city = models.OneToOneField(City, on_delete=models.CASCADE)
+    promo_code = models.CharField(max_length=4, blank=True)
+
+    def __str__(self):
+        return (
+            f"""{
+            self.city,
+            self.user.username,
+            self.promo_code
+            }"""
+        )
+    # TODO: make sure it works
+    # @receiver(post_save, sender=User)
+    # def create_user_profile(sender, instance, created, **kwargs):
+    #     if created:
+    #         Profile.objects.create(user=instance)
+
+    # @receiver(post_save, sender=User)
+    # def save_user_profile(sender, instance, **kwargs):
+    #     instance.profile.save()
+
+
 class Ticket(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    ticket_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Event, related_name='ticket', on_delete=models.CASCADE)
     slug = models.SlugField(max_length=255, blank=True)
     date_sold = models.DateTimeField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     bought_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, related_name='buyer')
-    promotor = models.CharField(max_length=4, blank=True)
+    promotor = models.ForeignKey(Promotor, on_delete=models.CASCADE, blank=True, null=True)
+    used = models.BooleanField(default=False) #Can be checked only by the people on the gate
 
     def __str__(self):
         return (
@@ -125,7 +152,7 @@ class Ticket(models.Model):
             }"""
         )
 
-    
+
 
 # class User(models.Model):
 #     id = models.IntegerField(primary_key=True)
