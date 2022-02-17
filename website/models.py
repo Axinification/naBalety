@@ -87,6 +87,7 @@ class Event(models.Model):
     visible = models.BooleanField(default=False)
     slug = models.SlugField(max_length=255)
     event_date_time = models.DateTimeField()
+    is_promotor = models.BooleanField(default=False, blank=True)    
     price_1 = models.DecimalField(max_digits=5, decimal_places=2)
     pool_1 = models.IntegerField()
     pool_date_1 = models.DateTimeField()
