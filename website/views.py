@@ -22,31 +22,41 @@ def events_by_city(request, city):
 #Show specific event
 def event_details(request, slug):
     event = get_object_or_404(Event, slug=slug, visible=True)
-    tickets = Event.objects.annotate(num_tickets = Count('ticket')).count()
-    pool_sum = sum(filter(None, [event.pool_1, event.pool_2, event.pool_3, event.pool_4, event.pool_5, event.pool_6]))
-    print("Timezone: ", timezone.now())
-    print("Event: ", event.pool_date_1)
-    print("Pool: ", pool_sum)
-    print("Ticket: ", tickets)
-    return date_checker(request, event, tickets, pool_sum)
+    pools = [event.pool_1, event.pool_2, event.pool_3, event.pool_4, event.pool_5, event.pool_6]
+    pools_sum = sum(filter(None, pools))
+    pools_number = len([x for x in pools if x != None])
+    return date_checker(request, event, pools_number)
 
-#TODO metoda porównywania ilości biletów w sumie w wydarzenia do dobijania do puli jest błędna bo nie bieże poprawki na niepełne pule, jak to rozwiązać ?
-def date_checker(request, event, tickets, pool_sum): #TODO test ticketów, skąd się biorą?
-    if timezone.now() < event.event_date_time and pool_sum > tickets: #TODO Czy dodać 10 minut przed zamknięciem zamykanie puli?
-        if event.pool_1 and timezone.now() <= event.pool_date_1 and event.pool_1 > tickets:
-            return render(request, 'event_details/event_1_pool.html', {'event':event, 'tickets':tickets, 'pool_sum':pool_sum})
-        elif event.pool_2 and timezone.now() > event.pool_date_1 and event.pool_1+event.pool_2 > tickets:
-            return render(request, 'event_details/event_2_pool.html', {'event':event, 'tickets':tickets, 'pool_sum':pool_sum})
-        elif event.pool_3 and timezone.now() > event.pool_date_2 and event.pool_1+event.pool_2+event.pool_3 > tickets:
-            return render(request, 'event_details/event_3_pool.html', {'event':event, 'tickets':tickets, 'pool_sum':pool_sum})
-        elif event.pool_4 and timezone.now() > event.pool_date_3 and event.pool_1+event.pool_2+event.pool_3+event.pool_4 > tickets:
-            return render(request, 'event_details/event_4_pool.html', {'event':event, 'tickets':tickets, 'pool_sum':pool_sum})
-        elif event.pool_5 and timezone.now() > event.pool_date_4 and event.pool_1+event.pool_2+event.pool_3+event.pool_4+event.pool_5 > tickets:
-            return render(request, 'event_details/event_5_pool.html', {'event':event, 'tickets':tickets, 'pool_sum':pool_sum})
-        elif event.pool_6 and timezone.now() > event.pool_date_5 and event.pool_1+event.pool_2+event.pool_3+event.pool_4+event.pool_5+event.pool_6 > tickets:
-            return render(request, 'event_details/event_6_pool.html', {'event':event, 'tickets':tickets, 'pool_sum':pool_sum})
+def date_checker(request, event, pools_number): #TODO test ticketów, skąd się biorą?
+    if timezone.now() < event.event_date_time: #TODO Czy dodać 10 minut przed zamknięciem zamykanie puli?
+        if  event.pool_date_5 and timezone.now() >= event.pool_date_5 or event.pool_5 and event.pool_5 <= event.ticket.filter(pool_number=5).count():
+            return render(request, 'event_details/event_6_pool.html', {'event':event, 'pools_number':pools_number})
+        elif event.pool_date_4 and timezone.now() >= event.pool_date_4 or event.pool_4 and event.pool_4 <= event.ticket.filter(pool_number=4).count():
+            return render(request, 'event_details/event_5_pool.html', {'event':event, 'pools_number':pools_number})
+        elif event.pool_date_3 and timezone.now() >= event.pool_date_3 or event.pool_3 and event.pool_3 <= event.ticket.filter(pool_number=3).count():
+            return render(request, 'event_details/event_4_pool.html', {'event':event, 'pools_number':pools_number})
+        elif event.pool_date_2 and timezone.now() >= event.pool_date_2 or event.pool_2 and event.pool_2 <= event.ticket.filter(pool_number=2).count():
+            return render(request, 'event_details/event_3_pool.html', {'event':event, 'pools_number':pools_number})
+        elif event.pool_date_1 and timezone.now() >= event.pool_date_1 or event.pool_1 and event.pool_1 <= event.ticket.filter(pool_number=1).count():
+            return render(request, 'event_details/event_2_pool.html', {'event':event, 'pools_number':pools_number})
+        else:
+            return render(request, 'event_details/event_1_pool.html', {'event':event, 'pools_number':pools_number})
     else:
         return render(request, 'event_details/event_ended.html', {'event':event})
+
+
+        # if  event.pool_date_5 and timezone.now() >= event.pool_date_5 or event.pool_6 > event.ticket.filter(pool_number=6).count():
+        #     return render(request, 'event_details/event_6_pool.html', {'event':event, 'pools_number':pools_number})
+        # elif event.pool_date_4 and timezone.now() >= event.pool_date_4 or event.pool_5 > event.ticket.filter(pool_number=5).count():
+        #     return render(request, 'event_details/event_5_pool.html', {'event':event, 'pools_number':pools_number})
+        # elif event.pool_date_3 and timezone.now() >= event.pool_date_3 or event.pool_4 > event.ticket.filter(pool_number=4).count():
+        #     return render(request, 'event_details/event_4_pool.html', {'event':event, 'pools_number':pools_number})
+        # elif event.pool_date_2 and timezone.now() >= event.pool_date_2 or event.pool_3 > event.ticket.filter(pool_number=3).count():
+        #     return render(request, 'event_details/event_3_pool.html', {'event':event, 'pools_number':pools_number})
+        # elif event.pool_date_1 and timezone.now() >= event.pool_date_1 or event.pool_2 > event.ticket.filter(pool_number=2).count():
+        #     return render(request, 'event_details/event_2_pool.html', {'event':event, 'pools_number':pools_number})
+        # else:
+        #     return render(request, 'event_details/event_1_pool.html', {'event':event, 'pools_number':pools_number})
 
 #Show ticket #TODO change to sometihin like Ticket.object.filter(user==user)
 def ticket_details_by_id(request, ticket_id):

@@ -47,5 +47,5 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ['ticket_id', 'event', 'date_sold', 'price', 'bought_by', 'promotor']
+    list_display = ['ticket_id', 'event', 'date_sold', 'pool_number', 'price', 'bought_by', 'promotor']
     
