@@ -5,13 +5,14 @@ import uuid
 
 from django.forms import BooleanField
 from django.urls import reverse
+from django_extensions.db.fields import AutoSlugField
 
 # Create your models here.
 
 
 class City(models.Model):
     city = models.CharField(max_length=50, db_index=True)
-    slug = models.SlugField(max_length=255)
+    slug = AutoSlugField(populate_from=['city'])
     voivodeship = models.CharField( max_length=30,
         choices=[
             ('Dolnośląskie', 'Dolnośląskie'), 
@@ -48,7 +49,7 @@ class Club(models.Model):
     city = models.ForeignKey(City, on_delete=models.PROTECT)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255)
+    slug = AutoSlugField(populate_from=['name'])
 
     def __str__(self):
         return (
@@ -85,17 +86,26 @@ class Event(models.Model):
     description = models.TextField(blank=True)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
     visible = models.BooleanField(default=False)
-    slug = models.SlugField(max_length=255)
-    event_date_time = models.DateTimeField()
+    slug = AutoSlugField(populate_from=['name', 'id'])
     is_promotor = models.BooleanField(default=False, blank=True)    
     price_1 = models.DecimalField(max_digits=5, decimal_places=2)
     pool_1 = models.IntegerField()
-    pool_date_1 = models.DateTimeField()
-    price_2 = models.DecimalField(max_digits=5, decimal_places=2)
-    pool_2 = models.IntegerField()
-    pool_date_2 = models.DateTimeField()
-    price_3 = models.DecimalField(max_digits=5, decimal_places=2)
-    pool_3 = models.IntegerField()
+    pool_date_1 = models.DateTimeField(null=True, blank=True)
+    price_2 = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    pool_2 = models.IntegerField(null=True, blank=True)
+    pool_date_2 = models.DateTimeField(null=True, blank=True)
+    price_3 = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    pool_3 = models.IntegerField(null=True, blank=True)
+    pool_date_3 = models.DateTimeField(null=True, blank=True)
+    price_4 = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    pool_4 = models.IntegerField(null=True, blank=True)
+    pool_date_4 = models.DateTimeField(null=True, blank=True)
+    price_5 = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    pool_5 = models.IntegerField(null=True, blank=True)
+    pool_date_5 = models.DateTimeField(null=True, blank=True)
+    price_6 = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    pool_6 = models.IntegerField(null=True, blank=True)
+    event_date_time = models.DateTimeField()
 
     def get_absolute_url(self):
         return reverse('website:event_details', args=[self.slug])
@@ -136,7 +146,7 @@ class Promotor(models.Model):
 class Ticket(models.Model):
     ticket_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Event, related_name='ticket', on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=255, blank=True)
+    slug = AutoSlugField(populate_from=['ticket_id'])
     date_sold = models.DateTimeField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     bought_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, related_name='buyer')

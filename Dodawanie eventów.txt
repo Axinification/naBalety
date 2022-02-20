@@ -1,0 +1,2 @@
+Poczas dodawania eventów trzeba pamiętać o dobrym określeniu puli. 
+Pulą kończącą jest rozpoczęcie wydarzenia, dlatego jeśli dodajemy na przykład 4 pule datę zakończenia 4 puli zostawiamy pustą.
