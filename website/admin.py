@@ -3,6 +3,8 @@ from django.contrib import admin
 
 from .models import City, Club, Contact, Event, Promotor, Ticket
 
+#Page for registering admin panel display
+
 @admin.register(City)
 class EventAdmin(admin.ModelAdmin):
     list_display = ['city', 'voivodeship']
