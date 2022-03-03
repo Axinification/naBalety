@@ -27,7 +27,7 @@ def event_details(request, slug):
     pools_number = len([x for x in pools if x != None])
     return date_checker(request, event, pools_number)
 
-#Logic for deciding which poll is active
+#Logic for deciding which pool is active
 def date_checker(request, event, pools_number): 
     if timezone.now() < event.event_date_time: #TODO Czy dodać 10 minut przed zamknięciem zamykania puli?
         if  event.pool_date_5 and timezone.now() >= event.pool_date_5 or event.pool_5 and event.pool_5 <= event.ticket.filter(event=event ,pool_number=5).count():
