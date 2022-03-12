@@ -132,7 +132,7 @@ class Promotor(models.Model):
             self.promo_code
             }"""
         )
-    # TODO: make sure it works
+    # TODO: Make sure it works \/ make Promotor User
     # @receiver(post_save, sender=User)
     # def create_user_profile(sender, instance, created, **kwargs):
     #     if created:
@@ -147,7 +147,7 @@ class Ticket(models.Model):
     ticket_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Event, related_name='ticket', on_delete=models.CASCADE)
     slug = AutoSlugField(populate_from=['ticket_id'])
-    pool_number = models.IntegerField() #Remember to add editable=False do pool_number date_sold i price po dodaniu systemu dodawania biletów 
+    pool_number = models.IntegerField() #TODO Add editable=False do pool_number date_sold i price po dodaniu systemu dodawania biletów 
     date_sold = models.DateTimeField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     bought_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, related_name='buyer')

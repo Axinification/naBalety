@@ -1,5 +1,5 @@
 System biletowy - po zakupie biletu w panelu eventu odliczyć bilet z puli po potwierdzeniu płatności 
-następnie dodać bilet z wybranym eventem do bazy 
+następnie dodać bilet z wybranym eventem do bazy i dodać do licznika 10 biletów usera
 
 Galeria do eventów
 

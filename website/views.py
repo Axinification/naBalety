@@ -14,7 +14,7 @@ def events_page(request):
     events = Event.objects.all()
     return render(request, 'events.html', {'events': events})
 
-#Show events by city #TODO test if working
+#Show events by city #TODO Test if working
 def events_by_city(request, city):
     events = get_object_or_404(Event, slug=city)
     return render(request, 'events.html', {'events': events})
@@ -25,11 +25,15 @@ def event_details(request, slug):
     pools = [event.pool_1, event.pool_2, event.pool_3, event.pool_4, event.pool_5, event.pool_6]
     pools_sum = sum(filter(None, pools))
     pools_number = len([x for x in pools if x != None])
-    return date_checker(request, event, pools_number)
+    return date_pool_checker(request, event, pools_number)
 
 #Logic for deciding which pool is active
-def date_checker(request, event, pools_number): 
-    if timezone.now() < event.event_date_time: #TODO Czy dodać 10 minut przed zamknięciem zamykania puli?
+def date_pool_checker(request, event, pools_number): 
+    """
+        Time and pool amount checker
+    """
+
+    if timezone.now() < event.event_date_time: #TODO Do I subtract 10 minutes from the last pool (event_date_time)? #TODO Add summing up pool at check
         if  event.pool_date_5 and timezone.now() >= event.pool_date_5 or event.pool_5 and event.pool_5 <= event.ticket.filter(event=event ,pool_number=5).count():
             return render(request, 'event_details/event_6_pool.html', {'event':event, 'pools_number':pools_number})
         elif event.pool_date_4 and timezone.now() >= event.pool_date_4 or event.pool_4 and event.pool_4 <= event.ticket.filter(event=event ,pool_number=4).count():
@@ -46,13 +50,13 @@ def date_checker(request, event, pools_number):
         return render(request, 'event_details/event_ended.html', {'event':event})
 
 
-#Show ticket #TODO change to sometihin like Ticket.object.filter(user==user)
+#Show ticket 
 def ticket_details_by_id(request, ticket_id):
-    ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
+    ticket = get_object_or_404(Ticket, ticket_id=ticket_id) #TODO Change to sometihin like Ticket.object.filter(user==user) 
     if ticket.bought_by: #TODO Add bought_by == user
         return render(request, 'ticket.html', {'ticket':ticket})
     else:
-        return render(request, '404.html')
+        return render(request, '404.html') #DESIGN "Ticket not yours"
 
 #
 def clubs_by_city(request, city_slug):
