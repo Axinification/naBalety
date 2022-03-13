@@ -149,7 +149,6 @@ class Ticket(models.Model):
     slug = AutoSlugField(populate_from=['ticket_id'])
     pool_number = models.IntegerField() #TODO Add editable=False do pool_number date_sold i price po dodaniu systemu dodawania biletów 
     date_sold = models.DateTimeField()
-    price = models.DecimalField(max_digits=5, decimal_places=2)
     bought_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, related_name='buyer')
     promotor = models.ForeignKey(Promotor, on_delete=models.CASCADE, blank=True, null=True)
     used = models.BooleanField(default=False) #Can be checked only by the people on the gate
@@ -159,7 +158,6 @@ class Ticket(models.Model):
             f"""{
             self.bought_by,
             self.date_sold,
-            self.price,
             self.promotor
             }"""
         )
