@@ -82,7 +82,7 @@ class Contact(models.Model):
 class Event(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, db_index=True)
-    banner = models.ImageField(upload_to='banners/')
+    banner = models.ImageField(upload_to='banners/', default='banners/logo-wersja-pełna.png')
     description = models.TextField(blank=True)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, null=True, blank=True)
     visible = models.BooleanField(default=False)
