@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-rvj-6xu3+%nd^eq2o5g9ck&g^unrj=knm9j9z56goa((hf*6_g
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-#TODO Switch to False on production
+# TODO Switch to False on production
 
 ALLOWED_HOSTS = []
 
@@ -65,7 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                #'website.context_processors.' #Add objects globally
+                # 'website.context_processors.' #Add objects globally
             ],
         },
     },
